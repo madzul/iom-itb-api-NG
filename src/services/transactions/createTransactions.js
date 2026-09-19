@@ -87,7 +87,10 @@ const CreateTransaction = async (body, files, uploadPath) => {
 
     await decreaseMerchandiseStock({ merchandiseId, qty: qtyNum }, transaction);
 
-    const imageFileName = imageFile ? `${uploadPath}/public/images/transactions/${imageFile.filename}` : null;
+    // Multer (middlewares/multer.js) actually saves uploaded files to
+    // src/uploads/, served statically at the /uploads prefix (see app.js) —
+    // not /public/images/transactions, which nothing ever writes to.
+    const imageFileName = imageFile ? `${uploadPath}/uploads/${imageFile.filename}` : null;
     const grossAmount = Number(merchandise.price) * qtyNum;
 
     const newTransaction = await Transactions.create(
@@ -129,7 +132,7 @@ const CreateTransaction = async (body, files, uploadPath) => {
     await transaction.rollback();
 
     if (files && imageFile) {
-      const imageFilePath = path.join(__dirname, '../../public/images/transactions', imageFile.filename);
+      const imageFilePath = path.join(__dirname, '../../uploads', imageFile.filename);
       if (fs.existsSync(imageFilePath)) {
         fs.unlinkSync(imageFilePath);
       }

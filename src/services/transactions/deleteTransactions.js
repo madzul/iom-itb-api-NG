@@ -28,7 +28,7 @@ const DeleteTransactions = async (id) => {
 
     if (transactionRecord.payment) {
       const previousImageFileName = path.basename(transactionRecord.payment);
-      const previousImageFilePath = path.join(__dirname, '../../public/images/transactions', previousImageFileName);
+      const previousImageFilePath = path.join(__dirname, '../../uploads', previousImageFileName);
 
       if (fs.existsSync(previousImageFilePath)) {
         fs.unlinkSync(previousImageFilePath);
